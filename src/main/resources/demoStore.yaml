@@ -1,0 +1,510 @@
+openapi: 3.0.3
+info:
+  title: Lei's Ecommerce Demo - OpenAPI 3.0
+  description: ok
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+tags:
+  - name: admin
+    description: Add/delete/update products and discount
+  - name: store
+    description: Store operations about shopping cart
+
+
+paths:
+  /admin/product:
+    put:
+      tags:
+        - admin
+      summary: Update an existing product
+      description: Update an existing product by Id
+      operationId: updateProduct
+      requestBody:
+        description: Update an existent product in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+        required: true
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Product not found
+        '405':
+          description: Validation exception
+
+    post:
+      tags:
+        - admin
+      summary: Add a new product to the store
+      description: Add a new product to the store
+      operationId: addProduct
+      requestBody:
+        description: Create a new product in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Product'
+        required: true
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '405':
+          description: Invalid input
+
+
+  /admin/product/{productId}:
+    delete:
+      tags:
+        - admin
+      summary: Deletes a product
+      description: delete a product
+      operationId: deleteProduct
+      parameters:
+        - name: productId
+          in: path
+          description: Product id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid product id value
+      security:
+        - petstore_auth:
+            - write:products
+            - read:products
+
+  /product/{productId}:
+    get:
+      tags:
+        - store
+      summary: Find product by ID
+      description: Returns the json representing the product
+      operationId: getProductById
+      parameters:
+        - name: productId
+          in: path
+          description: ID of product to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Product not found
+
+
+
+  /admin/promotion/{productDiscountId}:
+    get:
+      tags:
+        - admin
+      summary: get a product discount by id
+      description: Returns a json representation of product discount
+      operationId: getProductDiscountById
+      parameters:
+        - name: productDiscountId
+          in: path
+          description: ID of product discount to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDiscount'
+    delete:
+      tags:
+        - admin
+      summary: Deletes a promotion / product discount
+      description: delete a product discount
+      operationId: deleteProductDiscount
+      parameters:
+        - name: productDiscountIdId
+          in: path
+          description: productDiscountId to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDiscount'
+        '400':
+          description: Invalid product id value
+
+
+
+  /admin/promotion:
+    post:
+      tags:
+        - admin
+      summary: create/add a new product discount
+      description: create/add a new product discount
+      operationId: createProductDiscount
+      requestBody:
+        description: Create a new product discount in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductDiscount'
+        required: true
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDiscount'
+        '405':
+          description: Invalid input
+    put:
+      tags:
+        - admin
+      summary: update a product discount
+      description: update an exiting product discount by id
+      operationId: updateProductDiscount
+      requestBody:
+        description: update a promotion in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductDiscount'
+        required: true
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDiscount'
+        '405':
+          description: Invalid input
+
+
+
+  /cart:
+    post:
+      tags:
+        - store
+      summary: create/add a new shopping cart
+      description: create/add a new shopping cart
+      operationId: createCart
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShoppingCart'
+        required: true
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductDiscount'
+        '405':
+          description: Invalid input
+
+
+components:
+  schemas:
+
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 1
+        name:
+          type: string
+          example: furniture
+
+    DateRange:
+      type: object
+      properties:
+        start:
+          type: string
+          format: date
+          example: 2022-11-23
+        end:
+          type: string
+          format: date
+          example: 2023-01-04
+
+    CartCondition:
+      type: object
+      schema:
+        oneOf:
+          - $ref: '#/components/schemas/CartValueCondition'
+          - $ref: '#/components/schemas/CartItemCondition'
+
+    CartValueCondition:
+      properties:
+        minAmount:
+          type: number
+          format: float
+
+    CartItemCondition:
+      properties:
+        productId:
+          type: integer
+          format: int64
+        minQuantity:
+          type: integer
+          format: int64
+
+    UserCondition:
+      type: object
+      properties:
+        conditionType:
+          type: string
+          enum:
+            - Fisrt Order
+            - Current Member
+            - None
+
+
+
+    Product:
+      required:
+        - id
+        - name
+        - categoryId
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: Computer Chair
+        categoryId:
+          type: integer
+
+    ProductPrice:
+      required:
+        - id
+        - productId
+        - price
+        - startDate
+        - endDate
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        productId:
+          type: integer
+        price:
+          type: number
+          format: float
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+
+    ProductDiscount:
+      required:
+        - id
+        - description
+        - productId
+        - discountValue
+        - discountUnit
+        - startDate
+        - endDate
+        - orderQuantity
+        - applyQuantity
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        description:
+          type: string
+          example: Computer Chair
+        productId:
+          type: integer
+          format: int64
+          example: 10
+        discountValue:
+          type: number
+          format: float
+        discountUnit:
+          type: string
+          enum: [percent, currency]
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        orderQuantity:
+          type: integer
+        applyQuantity:
+          type: integer
+        discountType:
+          type: string
+          enum: [shared, exclusive]
+
+    ShoppingCart:
+      required:
+        - id
+        - userId
+        - status
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userId:
+          type: integer
+        cartItems:
+          type: array
+          items:
+            type: CartItem
+        status:
+          type: string
+          enum: [closed, pending]
+        created:
+          type: string
+          format: date
+
+    CartItem:
+      required:
+        - cartId
+        - productId
+        - productQuantity
+      type: object
+      properties:
+        cartId:
+          type: integer
+          format: int64
+        productId:
+          type: integer
+        productQuantity:
+          type: integer
+
+
+    Promotion:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: Buy 1 get 1 free
+        dateRange:
+          $ref: '#/components/schemas/DateRange'
+        condition:
+          $ref: '#/components/schemas/Condition'
+        action:
+          $ref: '#/components/schemas/Action'
+
+        promotionType:
+          type: string
+          enum:
+            - shared
+            - exclusive
+        isGlobal:
+          type: boolean
+          default: false
+
+
+    Condition:
+      type: object
+      schema:
+        oneOf:
+          - $ref: '#/components/schemas/CartCondition'
+          - $ref: '#/components/schemas/UserCondition'
+
+    Action:
+      type: object
+      schema:
+        oneOf:
+          - $ref: '#/components/schemas/GiftAction'
+          - $ref: '#/components/schemas/DiscountAction'
+          - $ref: '#/components/schemas/ShippingAction'
+
+    GiftAction:
+      type: array
+      items:
+        type: object
+        properties:
+          productId:
+            type: integer
+          Quantity:
+            type: integer
+
+    DiscountAction:
+      type: object
+      properties:
+        discountAmount:
+          type: number
+          format: float
+        discountType:
+          type: string
+          enum: [percent, absolute]
+        productIds:
+          type: array
+          items:
+            type: integer
+
+    ShippingAction:
+      type: object
+      properties:
+        FreeShipping:
+          type: boolean
+
+
+
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+
