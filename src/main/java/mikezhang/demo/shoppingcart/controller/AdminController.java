@@ -1,12 +1,5 @@
 package mikezhang.demo.shoppingcart.controller;
 
-import mikezhang.demo.shoppingcart.BasicApiResponse;
-import mikezhang.demo.shoppingcart.model.ProductDiscountInfo;
-import mikezhang.demo.shoppingcart.model.ProductInfo;
-import mikezhang.demo.shoppingcart.model.entity.Product;
-import mikezhang.demo.shoppingcart.model.entity.ProductDiscount;
-import mikezhang.demo.shoppingcart.service.ProductDiscountService;
-import mikezhang.demo.shoppingcart.service.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -14,11 +7,22 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import java.net.URI;
+import mikezhang.demo.shoppingcart.BasicApiResponse;
+import mikezhang.demo.shoppingcart.model.ProductDiscountInfo;
+import mikezhang.demo.shoppingcart.model.ProductInfo;
+import mikezhang.demo.shoppingcart.model.entity.Product;
+import mikezhang.demo.shoppingcart.model.entity.ProductDiscount;
+import mikezhang.demo.shoppingcart.service.ProductDiscountService;
+import mikezhang.demo.shoppingcart.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 //@Validated
 @Tag(name = "Admin API", description = "Admin APIs for managing products and discount")
