@@ -81,3 +81,5 @@ Example:
 - view the demo API's OpenAPI specification on enbedded Swagger UI, go to
 ```http://localhost:8080/swagger-ui/index.html```
 - The above Swagger UI is configured to allow issuing API test requests, so this is also a convenient place to test the API.
+- To run unit tests, run ```$ mvn test```
+- 
