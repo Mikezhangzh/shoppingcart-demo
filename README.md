@@ -35,7 +35,7 @@ This demo only considers discount related to products and will be applied only t
 customer saved (in the "shopping cart"). It will not consider other types promotion such as "buy $100+ get $15 off"
 (value based), or "Prime member get free shipping" (membership based).
 
-The following is the ProductDiscount modol design:
+The following is the ProductDiscount model design:
 
 | ProductDiscount |                                                                                       |
 |-----------------|---------------------------------------------------------------------------------------|
