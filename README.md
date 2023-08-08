@@ -70,16 +70,23 @@ Example:
   } 
   ```
 ### Running and testing
-- Checkout the source code from 
+- Checkout the source code from
+
 ```https://github.com/Mikezhangzh/shoppingcart-demo.git```
 - Built by maven. From the root directory of the project, run 
+
 ```$ mvn clean install```
 - To run demo application on an enbedded server on localhost, run
+
 ```$ mvn spring-boot:run```
 - View the H2 in-memory database, user: sa; password: password, go to
+
 ```http://localhost:8080/h2-console```
 - view the demo API's OpenAPI specification on enbedded Swagger UI, go to
+
 ```http://localhost:8080/swagger-ui/index.html```
 - The above Swagger UI is configured to allow issuing API test requests, so this is also a convenient place to test the API.
-- To run unit tests, run ```$ mvn test```
-- 
+
+- To run unit tests, run
+
+```$ mvn test```
