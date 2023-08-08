@@ -1,5 +1,6 @@
-package mikezhang.demo.shoppingcart.controller;
+package mikezhang.demo.shoppingcart.test;
 
+import mikezhang.demo.shoppingcart.controller.ShoppingCartController;
 import mikezhang.demo.shoppingcart.error.NotExistException;
 import mikezhang.demo.shoppingcart.model.CartItemInfo;
 import mikezhang.demo.shoppingcart.model.entity.CartItem;

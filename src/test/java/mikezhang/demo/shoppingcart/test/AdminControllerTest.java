@@ -1,5 +1,6 @@
-package mikezhang.demo.shoppingcart.controller;
+package mikezhang.demo.shoppingcart.test;
 
+import mikezhang.demo.shoppingcart.controller.AdminController;
 import mikezhang.demo.shoppingcart.enums.DiscountScope;
 import mikezhang.demo.shoppingcart.enums.DiscountUnit;
 import mikezhang.demo.shoppingcart.error.NotAllowedException;
