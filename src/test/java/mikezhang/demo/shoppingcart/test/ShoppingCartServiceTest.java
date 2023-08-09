@@ -123,48 +123,6 @@ public class ShoppingCartServiceTest {
         }
     };
 
-    @Test
-    public void testGetDiscountInfo() {
-        CartItem mockItem = new CartItem() {
-            public Product getProduct() {
-                return mockProductBook;
-            }
-
-            public int getQuantity() {
-                return 4;
-            }
-        };
-        CartItemDiscountInfo discountInfo = new ShoppingCartService().getCartItemDiscountInfo(mockItem);
-        Assert.assertEquals(300d, discountInfo.getTotalAfterDiscount(), 0.000001);
-        Assert.assertEquals("Buy 2 get 1 free", discountInfo.getDiscountApplied());
-
-        mockItem = new CartItem() {
-            public Product getProduct() {
-                return mockProductComputer;
-            }
-
-            public int getQuantity() {
-                return 1;
-            }
-        };
-        discountInfo = new ShoppingCartService().getCartItemDiscountInfo(mockItem);
-        Assert.assertEquals(640d, discountInfo.getTotalAfterDiscount(), 0.000001);
-        Assert.assertEquals("20% off sale", discountInfo.getDiscountApplied());
-
-        mockItem = new CartItem() {
-            public Product getProduct() {
-                return mockProductPen;
-            }
-
-            public int getQuantity() {
-                return 3;
-            }
-        };
-        discountInfo = new ShoppingCartService().getCartItemDiscountInfo(mockItem);
-        Assert.assertEquals(25d, discountInfo.getTotalAfterDiscount(), 0.000001);
-        Assert.assertEquals("Buy 1 get 1 50% off", discountInfo.getDiscountApplied());
-    }
-
     CartItem mockItemBook = new CartItem() {
         public Product getProduct() {
             return mockProductBook;
@@ -197,7 +155,6 @@ public class ShoppingCartServiceTest {
 
     @Test
     public void testGetCartItemDiscountInfo() {
-
         CartItemDiscountInfo discountInfo = new ShoppingCartService().getCartItemDiscountInfo(mockItemBook);
         Assert.assertEquals(300d, discountInfo.getTotalAfterDiscount(), 0.000001);
         Assert.assertEquals("Buy 2 get 1 free", discountInfo.getDiscountApplied());
@@ -224,8 +181,5 @@ public class ShoppingCartServiceTest {
         };
         double cartTotalPrice = service.getShoppingCartInfo(1).getGrandTotal();
         Assert.assertEquals(965d, cartTotalPrice, 0.000001);
-
     }
-
-
 }
