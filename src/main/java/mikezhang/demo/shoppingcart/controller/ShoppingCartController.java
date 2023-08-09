@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import mikezhang.demo.shoppingcart.BasicApiResponse;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Customer Shopping cart API", description = "Customer shopping cart APIs")
 @RestController
 public class ShoppingCartController {
     @Autowired
@@ -97,7 +99,7 @@ public class ShoppingCartController {
     @PostMapping(value = "/cart/add")
     public ResponseEntity<?> addToCart(@Valid @RequestBody CartItemInfo info) {
         CartItem result = cartService.addCartItem(info);
-        ShoppingCartInfo cartInfo = cartService.listCartItem(info.getCustomerId());
+        ShoppingCartInfo cartInfo = cartService.getShoppingCartInfo(info.getCustomerId());
         return new ResponseEntity<ShoppingCartInfo>(cartInfo, HttpStatus.CREATED);
     }
 
@@ -109,7 +111,7 @@ public class ShoppingCartController {
     @PutMapping(value = "/cart/update")
     public ResponseEntity<?> updateCartItem(@Valid @RequestBody CartItemInfo info) {
         cartService.updateCartItem(info);
-        ShoppingCartInfo cartInfo = cartService.listCartItem(info.getCustomerId());
+        ShoppingCartInfo cartInfo = cartService.getShoppingCartInfo(info.getCustomerId());
         return ResponseEntity.ok(cartInfo);
     }
 
@@ -120,7 +122,7 @@ public class ShoppingCartController {
             @ApiResponse(responseCode = "500", description = "Internal server error", content = @Content(schema = @Schema(implementation = BasicApiResponse.class), mediaType = "application/json"))})
     @GetMapping(value = "/cart/{cutomerId}")
     public ResponseEntity<?> getCartDetailForCustomer(@PathVariable Integer customerId) {
-        ShoppingCartInfo cartInfo = cartService.listCartItem(customerId);
+        ShoppingCartInfo cartInfo = cartService.getShoppingCartInfo(customerId);
         return ResponseEntity.ok(cartInfo);
     }
 

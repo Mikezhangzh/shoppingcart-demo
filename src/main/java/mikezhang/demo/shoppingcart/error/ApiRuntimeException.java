@@ -1,9 +1,8 @@
 package mikezhang.demo.shoppingcart.error;
 
 public class ApiRuntimeException extends RuntimeException {
-    /**
-     *  Error msg that can be shown to clients
-     */
+
+    //Error msg that can be shown to clients
     protected String externalMassage;
 
     public ApiRuntimeException(String msg) {

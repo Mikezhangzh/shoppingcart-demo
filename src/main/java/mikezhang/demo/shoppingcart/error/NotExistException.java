@@ -2,7 +2,6 @@ package mikezhang.demo.shoppingcart.error;
 
 public class NotExistException extends ApiRuntimeException {
 
-
     public NotExistException(String msg) {
         super(msg);
     }

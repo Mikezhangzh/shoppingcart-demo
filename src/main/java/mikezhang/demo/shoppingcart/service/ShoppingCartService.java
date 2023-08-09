@@ -17,6 +17,7 @@ import mikezhang.demo.shoppingcart.repository.CartItemRepository;
 import mikezhang.demo.shoppingcart.repository.CustomerRepository;
 import mikezhang.demo.shoppingcart.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -62,19 +63,30 @@ public class ShoppingCartService {
         repository.delete(item);
     }
 
-    public ShoppingCartInfo listCartItem(int customerId) {
-        Optional<Customer> optCustomer = customerRepository.findById(customerId);
-        if (!optCustomer.isPresent())
-            throw new NotExistException("invalid customer id: " + customerId);
-        List<CartItem> cartItems = repository.findByPkCustomer(optCustomer.get());
-        ShoppingCartInfo cartInfo = new ShoppingCartInfo();
-        List<CartItemDiscountInfo> discountInfos = cartItems.stream().map(item -> getDiscountInfo(item)).collect(Collectors.toList());
+    /**
+     * Go through the cart items in the shopping cart and determine if any discount is available and can be applied.
+     * Then calculate the total discounted prices of the cart.
+     *
+     * @param customerId
+     * @return ShoppingCartInfo - the shopping cart's detail information, including all discount applied and the total discounted price
+     */
+    public ShoppingCartInfo getShoppingCartInfo(int customerId) {
+        Pair<Customer, List<CartItem>> customerCartItemsPair = getCustomerShoppingCartItems(customerId);
+        List<CartItemDiscountInfo> discountInfos = customerCartItemsPair.getSecond().stream()
+                .map(item -> getCartItemDiscountInfo(item)).collect(Collectors.toList());
         double grandTotal = discountInfos.stream().mapToDouble(d -> d.getTotalAfterDiscount() == null ?
                 d.getOriginalTotal() : d.getTotalAfterDiscount()).sum();
         return new ShoppingCartInfo().
-                setCustomer(optCustomer.get()).
+                setCustomer(customerCartItemsPair.getFirst()).
                 setCartProductInfo(discountInfos).
                 setGrandTotal(grandTotal);
+    }
+
+    public Pair<Customer, List<CartItem>> getCustomerShoppingCartItems(int customerId) {
+        Optional<Customer> optCustomer = customerRepository.findById(customerId);
+        if (!optCustomer.isPresent())
+            throw new NotExistException("invalid customer id: " + customerId);
+        return Pair.of(optCustomer.get(), repository.findByPkCustomer(optCustomer.get()));
     }
 
     public void deleteCart(int customerId) {
@@ -84,8 +96,17 @@ public class ShoppingCartService {
         repository.deleteByPkCustomer(optCustomer.get());
     }
 
-    protected CartItemDiscountInfo getDiscountInfo(CartItem cartItem) {
-        Product p = cartItem.getPk().getProduct();
+    /**
+     * This method will<br>
+     * 1) find the product discount if any for the cart item <br>
+     * 2) determine if the discount can be applied: discount's orderQuantity < cart item's quantity for the product<br>
+     * 3) calculate the discounted price.
+     *
+     * @param cartItem the cartItem which contains product and quantity for the product
+     * @return CartItemDiscountInfo
+     */
+    public CartItemDiscountInfo getCartItemDiscountInfo(CartItem cartItem) {
+        Product p = cartItem.getProduct();
         CartItemDiscountInfo discountInfo = new CartItemDiscountInfo(p.getName(), p.getPrice(), cartItem.getQuantity());
         if (p.getProductDiscounts().isEmpty() || !canApplyDiscount(cartItem, p.getProductDiscounts().get(0))) {
             return discountInfo;
@@ -94,15 +115,19 @@ public class ShoppingCartService {
         int quantity = cartItem.getQuantity();
         double price = p.getPrice();
         double totalAfterDiscount = 0;
-        while (quantity > 0) {
+        while (quantity >= d.getOrderQuantity()) {
             quantity -= d.getOrderQuantity();
             totalAfterDiscount += d.getOrderQuantity() * price;
             totalAfterDiscount -= d.getApplyQuantity() * (d.getDiscountUnit() == DiscountUnit.percentage ?
                     (price * d.getDiscountValue() / 100) : d.getDiscountValue());
         }
+        totalAfterDiscount += quantity * price;
         return discountInfo.setDiscountApplied(d.getDescription()).setTotalAfterDiscount(totalAfterDiscount);
     }
 
+    /**
+     * contains the logic if the discount can be applied.
+     */
     private boolean canApplyDiscount(CartItem item, ProductDiscount d) {
         return item.getQuantity() >= d.getOrderQuantity();
     }

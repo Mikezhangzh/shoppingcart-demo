@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 public class BasicApiResponse {
 	private final boolean success;
 	private final String message;
-	// try again
 
 	public BasicApiResponse(boolean success, String message) {
 		this.success = success;

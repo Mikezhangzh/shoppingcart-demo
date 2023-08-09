@@ -33,5 +33,4 @@ public class ExceptionHandlerAdvice {
 		ex.printStackTrace();
 		return new ResponseEntity<BasicApiResponse>(new BasicApiResponse(false, "Internal server error"), HttpStatus.INTERNAL_SERVER_ERROR);
 	}
-
 }

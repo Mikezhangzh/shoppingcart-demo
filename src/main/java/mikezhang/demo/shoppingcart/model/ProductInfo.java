@@ -1,6 +1,5 @@
 package mikezhang.demo.shoppingcart.model;
 
-
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 
